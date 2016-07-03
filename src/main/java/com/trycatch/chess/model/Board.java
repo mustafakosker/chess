@@ -1,5 +1,7 @@
 package com.trycatch.chess.model;
 
+import static com.trycatch.chess.constants.CellStatus.EMPTY;
+
 /**
  * Contains boardData and utility methods when traversing
  * the board.
@@ -21,42 +23,32 @@ public class Board {
     }
 
     /**
-     * @return two dimenson array containing board data
-     */
-    public int[][] getBoardData() {
-        return boardData;
-    }
-
-    /**
-     * Overloaded method of {@link #setCellStatus(Position, int)}
+     * Checks if the board is available for the given position
+     * to set.
      *
-     * @param x
-     * @param y
-     * @param cellStatus
-     * @return
+     * @param position position to check
+     * @return boolean whether the given position is available to place
+     *  a piece or not
      */
-    public boolean setCellStatus(int x, int y, int cellStatus) {
-        return setCellStatus(new Position(x, y), cellStatus);
-    }
-
-    /**
-     * This method will try to set the specified position cell
-     * to given cell status.
-     *
-     * @param position position of the cell to be set.
-     * @param cellStatus status of the cell to be set.
-     *                   See {@link com.trycatch.chess.constants.CellStatus}
-     * @return false if the position is outside of the board, otherwise true.
-     */
-    public boolean setCellStatus(Position position, int cellStatus) {
+    public boolean isCellAvailable(Position position) {
         final int x = position.getX();
         final int y = position.getY();
 
-        if (x < 0 || y < 0 || x >= width || y >= height) {
+        if (x >= width || y >= height || x < 0 || y < 0 ||
+                boardData[x][y] != EMPTY) {
             return false;
         } else {
-          boardData[x][y] = cellStatus;
-          return true;
+            return true;
         }
+    }
+
+    /**
+     * Sets the board data of the given position with given status.
+     *
+     * @param position position to be set
+     * @param cellStatus status of the cell. see {@link com.trycatch.chess.constants.CellStatus}
+     */
+    public void setCellStatus(Position position, int cellStatus) {
+        boardData[position.getX()][position.getY()] = cellStatus;
     }
 }

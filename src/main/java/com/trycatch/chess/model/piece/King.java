@@ -1,9 +1,9 @@
 package com.trycatch.chess.model.piece;
 
-import com.trycatch.chess.model.Board;
 import com.trycatch.chess.model.Position;
-import static com.trycatch.chess.constants.CellStatus.OCCUPIED;
-import static com.trycatch.chess.constants.CellStatus.FILLED;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Implementation of King piece.
@@ -11,25 +11,33 @@ import static com.trycatch.chess.constants.CellStatus.FILLED;
 public class King implements Piece {
     private Position position;
 
+    private static Position[] occupiedPositions = {
+            new Position(-1, -1),
+            new Position(-1, 0),
+            new Position(-1, 1),
+            new Position(0, -1),
+            new Position(0, 1),
+            new Position(1, 1),
+            new Position(1, 0),
+            new Position(1, -1)
+    };
+
+    private static List<Position> occupiedPositionsList = Arrays.asList(occupiedPositions);
+
     public King() {
         this.position = null;
     }
 
-    public void occupyBoard(Position p, Board board) {
-        // TODO: add assertion here.
+    public List<Position> getOccupiedPositionsList() {
+        return occupiedPositionsList;
+    }
 
-        final int x = p.getX();
-        final int y = p.getY();
+    public boolean occupiesVerticalAndHorizontal() {
+        return false;
+    }
 
-        board.setCellStatus(p, FILLED);
-        board.setCellStatus(x + 1, y, OCCUPIED);
-        board.setCellStatus(x, y + 1, OCCUPIED);
-        board.setCellStatus(x + 1, y + 1, OCCUPIED);
-        board.setCellStatus(x - 1, y, OCCUPIED);
-        board.setCellStatus(x, y - 1, OCCUPIED);
-        board.setCellStatus(x - 1, y - 1, OCCUPIED);
-        board.setCellStatus(x - 1, y + 1, OCCUPIED);
-        board.setCellStatus(x + 1, y - 1, OCCUPIED);
+    public boolean occupiesDiagonal() {
+        return false;
     }
 
     public void setPosition(Position position) {
