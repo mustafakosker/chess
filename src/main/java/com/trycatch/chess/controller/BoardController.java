@@ -2,7 +2,7 @@ package com.trycatch.chess.controller;
 
 import com.trycatch.chess.model.Board;
 import com.trycatch.chess.model.Position;
-import com.trycatch.chess.model.piece.King;
+import com.trycatch.chess.model.piece.Knight;
 import com.trycatch.chess.model.piece.Piece;
 import com.trycatch.chess.model.piece.Rook;
 
@@ -58,11 +58,14 @@ public class BoardController {
 
     public static void main(String[] args) {
         List<Piece> pieces = new ArrayList<>();
-        pieces.add(new King());
-        pieces.add(new King());
-        pieces.add(new Rook(3, 3));
+        pieces.add(new Rook(4, 4));
+        pieces.add(new Knight());
+        pieces.add(new Knight());
+        pieces.add(new Rook(4, 4));
+        pieces.add(new Knight());
+        pieces.add(new Knight());
 
-        BoardController boardController = new BoardController(new Board(3,3), pieces);
+        BoardController boardController = new BoardController(new Board(4, 4), pieces);
         boardController.findChessCombination(new Position(0, 0), 0);
 
         boardController.getSolutionBoard().stream().forEach(System.out::println);

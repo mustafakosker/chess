@@ -86,11 +86,12 @@ public class Board {
      * @param cellStatus status of the cell. see {@link com.trycatch.chess.constants.CellStatus}
      */
     public boolean setCellStatus(Position position, int cellStatus) {
-        final int x = position.getX();
-        final int y = position.getY();
-
         if (isPositionValid(position)) {
-            if (boardData[x][y] == OCCUPIED) {
+            final int x = position.getX();
+            final int y = position.getY();
+
+            if (cellStatus == OCCUPIED &&
+                    (boardData[x][y] > 0)) {
                 boardData[x][y] += OCCUPIED;
             } else {
                 boardData[x][y] = cellStatus;
@@ -155,21 +156,24 @@ public class Board {
      * It will return null if there is no available position in the board.
      */
     public Position getNextAvailablePosition(Position position) {
-        final Position nextPosition = getNextPosition(position);
+        Position nextPosition = getNextPosition(position);
 
-        if (!isPositionValid(nextPosition)) {
-            return null;
-        }
-
-        for (int i = nextPosition.getY(); i < height; i++) {
-            for (int j = nextPosition.getX(); j < width; j++) {
-                if(boardData[j][i] == EMPTY) {
-                    return new Position(j, i);
-                }
+        for (int i = getRawPosition(position); i < getTotalNumberOfCells(); i++) {
+            if (!isPositionValid(nextPosition)) {
+                return null;
             }
+            if (getCellStatus(nextPosition) == EMPTY) {
+                return nextPosition;
+            }
+            nextPosition = getNextPosition(nextPosition);
         }
+
 
         return null;
+    }
+
+    private int getTotalNumberOfCells() {
+        return width * height;
     }
 
     private int getRawPosition(Position position) {
@@ -225,5 +229,24 @@ public class Board {
     public boolean isPositionAfterThanLastCell(Position position) {
         return ((position.getY() == (height - 1)) && (position.getX() >= width))
                 || (position.getY() >= height);
+    }
+
+    @Override
+    public String toString() {
+        String separator = ",";
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < boardData.length; ++i)
+        {
+            result.append("[");
+            for (int j = 0; j < boardData[i].length; ++j)
+                if (j > 0)
+                    result.append(boardData[j][i]).append(separator);
+                else
+                    result.append(boardData[j][i]).append(separator);
+            result.append("]\n");
+        }
+
+        return result.toString();
     }
 }
