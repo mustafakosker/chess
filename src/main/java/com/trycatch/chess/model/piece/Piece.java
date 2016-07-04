@@ -13,4 +13,6 @@ public interface Piece {
     boolean occupiesDiagonal();
 
     List<Position> getOccupiedPositionsList();
+
+    Position getPosition();
 }

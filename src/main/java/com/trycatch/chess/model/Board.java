@@ -102,6 +102,40 @@ public class Board {
         return false;
     }
 
+    public void putPieceOnBoard(Piece piece) {
+        // TODO reuse transformed list
+
+        piece.getOccupiedPositionsList()
+                .stream()
+                .map(p -> p.addPosition(piece.getPosition()))
+                .forEach(p -> setCellStatus(p, OCCUPIED));
+        setCellStatus(piece.getPosition(), FILLED);
+    }
+
+    public void removePieceFromBoard(Piece piece) {
+        // TODO reuse transformed list
+
+        piece.getOccupiedPositionsList()
+                .stream()
+                .map(p -> p.addPosition(piece.getPosition()))
+                .forEach(p -> unsetCellStatus(p, OCCUPIED));
+        unsetCellStatus(piece.getPosition(), FILLED);
+    }
+
+    private void unsetCellStatus(Position position, int cellStatus) {
+        if (!isPositionValid(position)) {
+            return;
+        }
+        final int x = position.getX();
+        final int y = position.getY();
+
+        if (cellStatus == OCCUPIED) {
+            boardData[x][y] -= OCCUPIED;
+        } else {
+            boardData[x][y] = EMPTY;
+        }
+    }
+
     /**
      *
      * @param position to get status from board
