@@ -47,4 +47,11 @@ public class King implements Piece {
     public Position getPosition() {
         return position;
     }
+
+    @Override
+    public String toString() {
+        return "King{" +
+                "position=" + position +
+                '}';
+    }
 }

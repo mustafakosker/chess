@@ -108,6 +108,7 @@ public class Board {
         piece.getOccupiedPositionsList()
                 .stream()
                 .map(p -> p.addPosition(piece.getPosition()))
+                .filter(position -> !position.equals(piece.getPosition()))
                 .forEach(p -> setCellStatus(p, OCCUPIED));
         setCellStatus(piece.getPosition(), FILLED);
     }
@@ -133,6 +134,10 @@ public class Board {
             boardData[x][y] -= OCCUPIED;
         } else {
             boardData[x][y] = EMPTY;
+        }
+
+        if (boardData[x][y] == EMPTY) {
+            numberOfEmptyCells++;
         }
     }
 
@@ -160,7 +165,7 @@ public class Board {
         }
 
         for (int i = nextPosition.getY(); i < height; i++) {
-            for (int j = nextPosition.getX(); i < width; j++) {
+            for (int j = nextPosition.getX(); j < width; j++) {
                 if(boardData[j][i] == EMPTY) {
                     return new Position(j, i);
                 }
@@ -218,5 +223,10 @@ public class Board {
         final int y = position.getY();
 
         return (x < width) && (y < height) && (x >= 0) && (y >= 0);
+    }
+
+    public boolean isPositionAfterThanLastCell(Position position) {
+        return ((position.getY() == (height - 1)) && (position.getX() >= width))
+                || (position.getY() >= height);
     }
 }

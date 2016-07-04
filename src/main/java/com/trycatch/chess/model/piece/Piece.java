@@ -15,4 +15,6 @@ public interface Piece {
     List<Position> getOccupiedPositionsList();
 
     Position getPosition();
+
+    void setPosition(Position position);
 }
