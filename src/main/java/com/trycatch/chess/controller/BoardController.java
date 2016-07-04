@@ -4,6 +4,7 @@ import com.trycatch.chess.model.Board;
 import com.trycatch.chess.model.Position;
 import com.trycatch.chess.model.piece.King;
 import com.trycatch.chess.model.piece.Piece;
+import com.trycatch.chess.model.piece.Rook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,7 @@ public class BoardController {
         List<Piece> pieces = new ArrayList<>();
         pieces.add(new King());
         pieces.add(new King());
+        pieces.add(new Rook(3, 3));
 
         BoardController boardController = new BoardController(new Board(3,3), pieces);
         boardController.findChessCombination(new Position(0, 0), 0);

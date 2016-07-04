@@ -72,8 +72,7 @@ public class Board {
      * @return true if the piece threats another piece
      */
     private boolean pieceThreatsAnotherPiece(Piece piece, Position position) {
-        return piece.getOccupiedPositionsList().stream()
-                .map(p -> p.addPosition(position))
+        return piece.getOccupiedPositionsList(position).stream()
                 .filter(p -> !isCellAvailableToThreat(p))
                 .count() > 0;
     }
@@ -105,9 +104,8 @@ public class Board {
     public void putPieceOnBoard(Piece piece) {
         // TODO reuse transformed list
 
-        piece.getOccupiedPositionsList()
+        piece.getOccupiedPositionsList(piece.getPosition())
                 .stream()
-                .map(p -> p.addPosition(piece.getPosition()))
                 .filter(position -> !position.equals(piece.getPosition()))
                 .forEach(p -> setCellStatus(p, OCCUPIED));
         setCellStatus(piece.getPosition(), FILLED);
@@ -116,9 +114,8 @@ public class Board {
     public void removePieceFromBoard(Piece piece) {
         // TODO reuse transformed list
 
-        piece.getOccupiedPositionsList()
+        piece.getOccupiedPositionsList(piece.getPosition())
                 .stream()
-                .map(p -> p.addPosition(piece.getPosition()))
                 .forEach(p -> unsetCellStatus(p, OCCUPIED));
         unsetCellStatus(piece.getPosition(), FILLED);
     }

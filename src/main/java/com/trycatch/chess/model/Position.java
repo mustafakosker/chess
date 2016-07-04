@@ -24,6 +24,14 @@ public class Position {
         return new Position(this.getX() + position.getX(), this.getY() + position.getY());
     }
 
+    public Position addReferencePositionX(int x) {
+        return new Position(x, this.getY());
+    }
+
+    public Position addReferencePositionY(int y) {
+        return new Position(this.getX(), y);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

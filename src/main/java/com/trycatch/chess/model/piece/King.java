@@ -4,6 +4,7 @@ import com.trycatch.chess.model.Position;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of King piece.
@@ -28,8 +29,10 @@ public class King implements Piece {
         this.position = null;
     }
 
-    public List<Position> getOccupiedPositionsList() {
-        return occupiedPositionsList;
+    public List<Position> getOccupiedPositionsList(Position position) {
+        return occupiedPositionsList.stream()
+                .map(p -> p.addPosition(position))
+                .collect(Collectors.toList());
     }
 
     public boolean occupiesVerticalAndHorizontal() {

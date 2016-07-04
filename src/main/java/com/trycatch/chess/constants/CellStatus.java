@@ -13,10 +13,10 @@ public final class CellStatus {
      * OCCUPIED means the cell is threatened by another piece
      * and nothing can be placed in it.
      */
-    public static final int OCCUPIED = 1;
+    public static final int FILLED = 1;
 
     /**
      * FILLED means there is a piece in the cell.
      */
-    public static final int FILLED = 2;
+    public static final int OCCUPIED = 2;
 }
