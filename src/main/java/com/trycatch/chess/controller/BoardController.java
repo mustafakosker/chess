@@ -2,10 +2,7 @@ package com.trycatch.chess.controller;
 
 import com.trycatch.chess.model.Board;
 import com.trycatch.chess.model.Position;
-import com.trycatch.chess.model.piece.Bishop;
-import com.trycatch.chess.model.piece.King;
-import com.trycatch.chess.model.piece.Piece;
-import com.trycatch.chess.model.piece.Rook;
+import com.trycatch.chess.model.piece.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +35,7 @@ public class BoardController {
             final StringBuilder solution = new StringBuilder("Solution " + solutionBoard.size()).append("\n");
 
             pieceList.stream().forEach(piece -> solution.append(piece.toString()).append("\n"));
+            solution.append(board);
 
             solutionBoard.add(solution.toString());
         } else {
@@ -48,7 +46,8 @@ public class BoardController {
                 piece.setPosition(position);
                 board.putPieceOnBoard(piece);
 
-                findChessCombination(new Position(0, 0), pieceIndex+1);
+                // TODO change position with new Position(0, 0)
+                findChessCombination(position, pieceIndex+1);
 
                 board.removePieceFromBoard(piece);
                 piece.setPosition(null);
@@ -59,11 +58,15 @@ public class BoardController {
 
     public static void main(String[] args) {
         List<Piece> pieces = new ArrayList<>();
-        pieces.add(new Rook(3, 3));
         pieces.add(new King());
         pieces.add(new King());
+        pieces.add(new Queen(7, 7));
+        pieces.add(new Queen(7, 7));
+        pieces.add(new Bishop(7, 7));
+        pieces.add(new Bishop(7, 7));
+        pieces.add(new Knight());
 
-        BoardController boardController = new BoardController(new Board(3, 3), pieces);
+        BoardController boardController = new BoardController(new Board(7, 7), pieces);
         boardController.findChessCombination(new Position(0, 0), 0);
 
         boardController.getSolutionBoard().stream().forEach(System.out::println);
