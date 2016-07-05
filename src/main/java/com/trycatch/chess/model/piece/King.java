@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
  * Implementation of King piece.
  */
 public class King implements Piece {
+    public static final int ID = 1;
+
     private Position position;
 
     private static Position[] occupiedPositions = {

@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
  * Created by kosker on 04/07/16.
  */
 public class Rook implements Piece {
+    public static final int ID = 5;
+
     private Position position;
     private static List<Position> verticalOccupiedPositions;
     private static List<Position> horizontalOccupiedPositions;

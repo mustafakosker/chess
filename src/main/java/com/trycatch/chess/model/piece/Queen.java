@@ -10,6 +10,8 @@ import java.util.stream.Stream;
  * Created by kosker on 05/07/16.
  */
 public class Queen implements Piece {
+    public static final int ID = 4;
+
     private Bishop bishop;
     private Rook rook;
     private Position position;

@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
  * Created by kosker on 04/07/16.
  */
 public class Knight implements Piece {
+    public static final int ID = 3;
+
     private static Position[] occupiedPositions = {
             new Position(-1, -2),
             new Position(1, -2),

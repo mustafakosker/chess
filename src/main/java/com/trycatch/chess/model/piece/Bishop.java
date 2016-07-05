@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
  * Created by kosker on 04/07/16.
  */
 public class Bishop implements Piece {
+    public static final int ID = 2;
+
     private Position position;
     private static Position[] occupiedDirections = {
         new Position(-1, -1),
