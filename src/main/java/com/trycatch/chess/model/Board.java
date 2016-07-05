@@ -1,5 +1,6 @@
 package com.trycatch.chess.model;
 
+import com.trycatch.chess.game.BoardOccupyManager;
 import com.trycatch.chess.model.piece.Piece;
 
 import static com.trycatch.chess.constants.CellStatus.*;
@@ -24,6 +25,7 @@ public class Board {
         this.numberOfEmptyCells = width * height;
 
         this.boardData = new int[width][height];
+        BoardOccupyManager.createOccupiedPositionsMap(width, height);
     }
 
     /**
@@ -72,9 +74,11 @@ public class Board {
      * @return true if the piece threats another piece
      */
     private boolean pieceThreatsAnotherPiece(Piece piece, Position position) {
-        return piece.getOccupiedPositionsList(position).stream()
-                .filter(p -> !isCellAvailableToThreat(p))
-                .count() > 0;
+        return BoardOccupyManager
+                    .getOccupiedPositionsList(piece.getID(), position)
+                    .stream()
+                    .filter(p -> !isCellAvailableToThreat(p))
+                    .count() > 0;
     }
 
     /**
@@ -105,7 +109,7 @@ public class Board {
     public void putPieceOnBoard(Piece piece) {
         // TODO reuse transformed list
 
-        piece.getOccupiedPositionsList(piece.getPosition())
+        BoardOccupyManager.getOccupiedPositionsList(piece.getID(), piece.getPosition())
                 .stream()
                 .filter(position -> !position.equals(piece.getPosition()))
                 .forEach(p -> setCellStatus(p, OCCUPIED));
@@ -115,7 +119,7 @@ public class Board {
     public void removePieceFromBoard(Piece piece) {
         // TODO reuse transformed list
 
-        piece.getOccupiedPositionsList(piece.getPosition())
+        BoardOccupyManager.getOccupiedPositionsList(piece.getID(), piece.getPosition())
                 .stream()
                 .forEach(p -> unsetCellStatus(p, OCCUPIED));
         unsetCellStatus(piece.getPosition(), FILLED);

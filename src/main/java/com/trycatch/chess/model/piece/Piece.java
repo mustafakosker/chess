@@ -12,9 +12,11 @@ public interface Piece {
 
     boolean occupiesDiagonal();
 
-    List<Position> getOccupiedPositionsList(Position position);
+    List<Position> getRelativeOccupiedPositionsList();
 
     Position getPosition();
 
     void setPosition(Position position);
+
+    int getID();
 }

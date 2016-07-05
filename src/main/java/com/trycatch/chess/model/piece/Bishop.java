@@ -14,36 +14,6 @@ public class Bishop implements Piece {
     public static final int ID = 2;
 
     private Position position;
-    private static Position[] occupiedDirections = {
-        new Position(-1, -1),
-        new Position(-1, 1),
-        new Position(1, 1),
-        new Position(1, -1)
-    };
-
-    private static List<Position> occupiedDirectionPositionsList = Arrays.asList(occupiedDirections);
-    private static List<Position> occupiedPositionsList;
-
-    public Bishop(final int boardWidth, final int boardHeight) {
-        final int maxBoardDimension = Math.max(boardWidth, boardHeight);
-
-        if (occupiedPositionsList == null) {
-            occupiedPositionsList = calculateOccupiedPositionsList(maxBoardDimension);
-        }
-    }
-
-    private List<Position> calculateOccupiedPositionsList(final int maxBoardDimension) {
-        final List<Position> occupiedPositionsList = new ArrayList<>();
-
-        for (int i = 1; i < maxBoardDimension; i++) {
-            final int multiplier = i;
-            occupiedDirectionPositionsList
-                    .forEach(p ->
-                            occupiedPositionsList.add(new Position(p.getX() * multiplier, p.getY() * multiplier)));
-        }
-
-        return occupiedPositionsList;
-    }
 
     @Override
     public boolean occupiesVerticalAndHorizontal() {
@@ -56,11 +26,8 @@ public class Bishop implements Piece {
     }
 
     @Override
-    public List<Position> getOccupiedPositionsList(Position position) {
-        return occupiedPositionsList
-                .stream()
-                .map(p -> p.addPosition(position))
-                .collect(Collectors.toList());
+    public List<Position> getRelativeOccupiedPositionsList() {
+        return new ArrayList<>();
     }
 
     @Override
@@ -71,6 +38,11 @@ public class Bishop implements Piece {
     @Override
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    @Override
+    public int getID() {
+        return ID;
     }
 
     @Override

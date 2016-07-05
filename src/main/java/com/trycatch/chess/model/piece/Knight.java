@@ -38,10 +38,13 @@ public class Knight implements Piece {
     }
 
     @Override
-    public List<Position> getOccupiedPositionsList(Position position) {
-        return occupiedPositionList.stream()
-                .map(p -> p.addPosition(position))
-                .collect(Collectors.toList());
+    public List<Position> getRelativeOccupiedPositionsList() {
+        return occupiedPositionList;
+    }
+
+    @Override
+    public int getID() {
+        return ID;
     }
 
     @Override
@@ -53,6 +56,8 @@ public class Knight implements Piece {
     public void setPosition(Position position) {
         this.position = position;
     }
+
+
 
     @Override
     public String toString() {

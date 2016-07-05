@@ -1,4 +1,4 @@
-package com.trycatch.chess.controller;
+package com.trycatch.chess.game;
 
 import com.trycatch.chess.model.Board;
 import com.trycatch.chess.model.Position;
@@ -31,6 +31,8 @@ public class BoardController {
                 pieceIndex < pieceList.size()) {
             return;
         } else if (pieceIndex >= pieceList.size()) {
+            // TODO flush to output to save memory
+
             final StringBuilder solution = new StringBuilder("Solution " + solutionBoard.size()).append("\n");
 
             pieceList.stream().forEach(piece -> solution.append(piece.toString()).append("\n"));
@@ -96,27 +98,27 @@ public class BoardController {
     }
 
     public static void main(String[] args) {
-        int[] pieces = {King.ID, King.ID, Bishop.ID, Bishop.ID, Knight.ID, Queen.ID, Queen.ID};
-        BoardController boardController = new BoardController(new Board(7, 7));
+        //int[] pieces = {King.ID, King.ID, Bishop.ID, Bishop.ID, Knight.ID, Queen.ID, Queen.ID};
+        int[] pieces = {Knight.ID, Knight.ID, Knight.ID, Knight.ID, Rook.ID, Rook.ID};
 
-        int k = 0;
+        BoardController boardController = new BoardController(new Board(4, 4));
+
         do {
             List<Piece> pieceList = Arrays.stream(pieces).boxed()
                     .map(i -> {
                         if (i == Rook.ID) {
-                            return new Rook(7, 7);
+                            return new Rook();
                         } else if (i == Knight.ID) {
                             return new Knight();
                         } else if(i == Bishop.ID) {
-                            return new Bishop(7, 7);
+                            return new Bishop();
                         } else if(i == Queen.ID) {
-                            return new Queen(7,7);
+                            return new Queen();
                         } else {
                             return new King();
                         }
                     }).collect(Collectors.toList());
 
-            System.out.println(k++);
             boardController.setPieceList(pieceList);
             boardController.findChessCombination(new Position(0, 0), 0);
 

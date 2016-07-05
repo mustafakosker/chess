@@ -2,9 +2,8 @@ package com.trycatch.chess.model.piece;
 
 import com.trycatch.chess.model.Position;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by kosker on 05/07/16.
@@ -12,31 +11,26 @@ import java.util.stream.Stream;
 public class Queen implements Piece {
     public static final int ID = 4;
 
-    private Bishop bishop;
-    private Rook rook;
     private Position position;
-
-    public Queen(int boardWidth, int boardHeight) {
-        bishop = new Bishop(boardWidth, boardHeight);
-        rook = new Rook(boardWidth, boardHeight);
-    }
 
     @Override
     public boolean occupiesVerticalAndHorizontal() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean occupiesDiagonal() {
-        return false;
+        return true;
     }
 
     @Override
-    public List<Position> getOccupiedPositionsList(Position position) {
-        return Stream.concat(bishop.getOccupiedPositionsList(position).stream(),
-                rook.getOccupiedPositionsList(position).stream())
-                .filter(p -> !p.equals(position))
-                .collect(Collectors.toList());
+    public List<Position> getRelativeOccupiedPositionsList() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public int getID() {
+        return ID;
     }
 
     @Override
