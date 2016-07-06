@@ -98,33 +98,62 @@ public class BoardController {
     }
 
     public static void main(String[] args) {
-        //int[] pieces = {King.ID, King.ID, Bishop.ID, Bishop.ID, Knight.ID, Queen.ID, Queen.ID};
-        int[] pieces = {Knight.ID, Knight.ID, Knight.ID, Knight.ID, Rook.ID, Rook.ID};
+        List<Piece> pieceList = readPieces("1R,2K");
 
-        BoardController boardController = new BoardController(new Board(4, 4));
+        final int[] pieces = pieceList.stream().mapToInt(Piece::getID).toArray();
+        Arrays.sort(pieces);
+
+        final BoardController boardController = new BoardController(new Board(3, 3));
 
         do {
-            List<Piece> pieceList = Arrays.stream(pieces).boxed()
-                    .map(i -> {
-                        if (i == Rook.ID) {
-                            return new Rook();
-                        } else if (i == Knight.ID) {
-                            return new Knight();
-                        } else if(i == Bishop.ID) {
-                            return new Bishop();
-                        } else if(i == Queen.ID) {
-                            return new Queen();
-                        } else {
-                            return new King();
-                        }
-                    }).collect(Collectors.toList());
+            pieceList = Arrays.stream(pieces)
+                    .boxed()
+                    .map(BoardController::readPiece)
+                    .collect(Collectors.toList());
 
             boardController.setPieceList(pieceList);
             boardController.findChessCombination(new Position(0, 0), 0);
-
             pieceList.clear();
         } while (nextPermutation(pieces));
 
         boardController.getSolutionBoard().stream().forEach(System.out::println);
+    }
+
+    public static List<Piece> readPieces(final String input) {
+        final String[] splittedInput = input.split(",");
+        final List<Piece> pieceList = new ArrayList<>();
+
+        Arrays.stream(splittedInput).forEach(s -> {
+            final int numberOfPiece = s.charAt(0) - '0';
+            final char pieceKeyChar = s.charAt(1);
+
+            for (int i = 0; i < numberOfPiece; i++) {
+                pieceList.add(readPiece(pieceKeyChar));
+            }
+        });
+
+        return pieceList;
+    }
+
+    private static Piece readPiece(final int pieceKeyChar) {
+        switch (pieceKeyChar) {
+            case 'K':
+            case King.ID:
+                return new King();
+            case 'N':
+            case Knight.ID:
+                return new Knight();
+            case 'Q':
+            case Queen.ID:
+                return new Queen();
+            case 'B':
+            case Bishop.ID:
+                return new Bishop();
+            case 'R':
+            case Rook.ID:
+                return new Rook();
+            default:
+                return null;
+        }
     }
 }

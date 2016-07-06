@@ -34,7 +34,7 @@ public class King extends Piece {
     }
 
     /**
-     * {@link Piece#getID()}
+     * {@link Piece#}
      */
     @Override
     public int getID() {
