@@ -1,44 +1,23 @@
 package com.trycatch.chess.model.piece;
 
-import com.trycatch.chess.model.Position;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
- * Created by kosker on 04/07/16.
+ * Rook will move horizontally and vertically,
+ * therefore it will override {@link #occupiesVerticalAndHorizontal()}
  */
-public class Rook implements Piece {
+public class Rook extends Piece {
     public static final int ID = 5;
 
-    private Position position;
-
+    /**
+     * {@link Piece#occupiesVerticalAndHorizontal()}
+     */
     @Override
     public boolean occupiesVerticalAndHorizontal() {
         return true;
     }
 
-    @Override
-    public boolean occupiesDiagonal() {
-        return false;
-    }
-
-    @Override
-    public List<Position> getRelativeOccupiedPositionsList() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public Position getPosition() {
-        return position;
-    }
-
-    @Override
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
+    /**
+     * {@link Piece#getID()}
+     */
     @Override
     public int getID() {
         return ID;
@@ -47,7 +26,7 @@ public class Rook implements Piece {
     @Override
     public String toString() {
         return "Rook{" +
-                "position=" + position +
-                '}';
+                "position=" + getPosition() +
+                "}";
     }
 }

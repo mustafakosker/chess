@@ -1,54 +1,32 @@
 package com.trycatch.chess.model.piece;
 
-import com.trycatch.chess.model.Position;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
- * Created by kosker on 04/07/16.
+ * Bishop will occupy the board diagonally,
+ * therefore it will override {@link #occupiesDiagonal()}
  */
-public class Bishop implements Piece {
+public class Bishop extends Piece {
     public static final int ID = 2;
 
-    private Position position;
-
-    @Override
-    public boolean occupiesVerticalAndHorizontal() {
-        return false;
-    }
-
+    /**
+     * {@link Piece#occupiesDiagonal()}
+     */
     @Override
     public boolean occupiesDiagonal() {
         return true;
     }
 
-    @Override
-    public List<Position> getRelativeOccupiedPositionsList() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public Position getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
+    /**
+     * {@link Piece#getID()}
+     */
     @Override
     public int getID() {
-        return ID;
+        return Bishop.ID;
     }
 
     @Override
     public String toString() {
         return "Bishop{" +
-                "position=" + position +
+                "position=" + getPosition() +
                 '}';
     }
 }

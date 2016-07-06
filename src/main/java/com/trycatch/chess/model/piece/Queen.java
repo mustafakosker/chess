@@ -1,52 +1,40 @@
 package com.trycatch.chess.model.piece;
 
-import com.trycatch.chess.model.Position;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by kosker on 05/07/16.
+ * Queen will move horizontally, vertically and diagonally,
+ * therefore it will override {@link #occupiesVerticalAndHorizontal()} and {@link #occupiesDiagonal()}
  */
-public class Queen implements Piece {
+public class Queen extends Piece {
     public static final int ID = 4;
 
-    private Position position;
-
+    /**
+     * {@link Piece#occupiesVerticalAndHorizontal()}
+     */
     @Override
     public boolean occupiesVerticalAndHorizontal() {
         return true;
     }
 
+    /**
+     * {@link Piece#occupiesDiagonal()}
+     */
     @Override
     public boolean occupiesDiagonal() {
         return true;
     }
 
-    @Override
-    public List<Position> getRelativeOccupiedPositionsList() {
-        return new ArrayList<>();
-    }
-
+    /**
+     * {@link Piece#getID()}
+     */
     @Override
     public int getID() {
         return ID;
     }
 
     @Override
-    public Position getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    @Override
     public String toString() {
         return "Queen{" +
-                "position=" + position +
-                '}';
+                "position=" + getPosition() +
+                "}";
     }
 }

@@ -4,12 +4,12 @@ import com.trycatch.chess.model.Position;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Created by kosker on 04/07/16.
+ * Knight will have relative occupied positions list,
+ * therefore it will override {@link #getRelativeOccupiedPositionsList()}
  */
-public class Knight implements Piece {
+public class Knight extends Piece {
     public static final int ID = 3;
 
     private static Position[] occupiedPositions = {
@@ -25,44 +25,26 @@ public class Knight implements Piece {
 
     private static List<Position> occupiedPositionList = Arrays.asList(occupiedPositions);
 
-    private Position position;
-
-    @Override
-    public boolean occupiesVerticalAndHorizontal() {
-        return false;
-    }
-
-    @Override
-    public boolean occupiesDiagonal() {
-        return false;
-    }
-
+    /**
+     * {@link Piece#getRelativeOccupiedPositionsList()}
+     */
     @Override
     public List<Position> getRelativeOccupiedPositionsList() {
         return occupiedPositionList;
     }
 
+    /**
+     * {@link Piece#getID()}
+     */
     @Override
     public int getID() {
         return ID;
     }
 
     @Override
-    public Position getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-
-
-    @Override
     public String toString() {
         return "Knight{" +
-                "position=" + position +
-                '}';
+                "position=" + getPosition() +
+                "}";
     }
 }
