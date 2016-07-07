@@ -48,7 +48,7 @@ public class Board {
 
     /**
      * Checks whether the given position is suitable to place a piece
-     * on it or not. It will calculate the transformed thread positions
+     * on it or not. It will get occupy positions from BoardOccupyManager
      * and check whether there is a piece on these positions or not.
      *
      * @param piece piece to place on the board
@@ -84,7 +84,10 @@ public class Board {
     /**
      * Sets the board data of the given position with given status.
      * It'll increase the value of OCCUPIED cells in order to unset
-     * value of the board.
+     * value of the board. For example a cell value 4 means given position
+     * is being threatened by two pieces(2*OCCUPIED)
+     * It will also decrease numberOfEmpty cells if a cell state changes from
+     * EMPTY to FILLED or OCCUPIED
      *
      * @param position position to be set
      * @param cellStatus status of the cell. see {@link com.trycatch.chess.constants.CellStatus}
@@ -106,6 +109,16 @@ public class Board {
         return false;
     }
 
+    /**
+     * Places the piece on the board by marking the
+     * board data with OCCUPIED and FILLED.
+     * Position of the piece will be marked as FILLED.
+     * Positions occupied(threatened) by the piece
+     * will be marked as OCCUPIED.
+     *
+     * @param piece piece to put on the board.
+     *              {@link Piece#position should be set as well}
+     */
     public void putPieceOnBoard(Piece piece) {
         BoardOccupyManager.getOccupiedPositionsList(piece.getID(), piece.getPosition())
                 .stream()
@@ -114,6 +127,14 @@ public class Board {
         setCellStatus(piece.getPosition(), FILLED);
     }
 
+    /**
+     * This method removes a piece from the board by
+     * undoing the {@link #putPieceOnBoard(Piece)}
+     * It will iterate through all the occupied positions and current position
+     * of the piece and will call {@link #unsetCellStatus(Position, int)}
+     *
+     * @param piece piece to remove from the board
+     */
     public void removePieceFromBoard(Piece piece) {
         BoardOccupyManager.getOccupiedPositionsList(piece.getID(), piece.getPosition())
                 .stream()
@@ -121,6 +142,18 @@ public class Board {
         unsetCellStatus(piece.getPosition(), FILLED);
     }
 
+    /**
+     * Unsets status of the cell. It will set the status
+     * to EMPTY if one piece occupies the cell(that is cell value {@link com.trycatch.chess.constants.CellStatus#OCCUPIED})
+     * or cell status is {@link com.trycatch.chess.constants.CellStatus#FILLED} and it will increase numberOfEmptyCells
+     * by one to indicate there is one more space available to put piece on the board.
+     *
+     * If the position given being thretened(occupied) by two piece(that is cell value is 2 * OCCUPIED)
+     * than it will just decrease the value of the cell.
+     *
+     * @param position
+     * @param cellStatus
+     */
     private void unsetCellStatus(Position position, int cellStatus) {
         if (!PositionUtil.isPositionValid(position)) {
             return;
