@@ -25,7 +25,6 @@ public class Board {
         this.numberOfEmptyCells = width * height;
 
         this.boardData = new int[width][height];
-        BoardOccupyManager.createOccupiedPositionsMap(width, height);
     }
 
     /**
@@ -228,6 +227,14 @@ public class Board {
         final int y = position.getY();
 
         return (x < width) && (y < height) && (x >= 0) && (y >= 0);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public boolean isPositionAfterThanLastCell(Position position) {

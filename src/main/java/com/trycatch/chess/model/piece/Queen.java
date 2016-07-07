@@ -33,8 +33,7 @@ public class Queen extends Piece {
 
     @Override
     public String toString() {
-        return "Queen{" +
-                "position=" + getPosition() +
+        return "Queen{"  + getPosition() +
                 "}";
     }
 }

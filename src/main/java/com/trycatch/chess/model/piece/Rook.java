@@ -25,8 +25,7 @@ public class Rook extends Piece {
 
     @Override
     public String toString() {
-        return "Rook{" +
-                "position=" + getPosition() +
+        return "Rook{" + getPosition() +
                 "}";
     }
 }
