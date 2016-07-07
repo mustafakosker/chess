@@ -2,6 +2,7 @@ package com.trycatch.chess.model;
 
 import com.trycatch.chess.game.BoardOccupyManager;
 import com.trycatch.chess.model.piece.Piece;
+import com.trycatch.chess.util.PositionUtil;
 
 import static com.trycatch.chess.constants.CellStatus.*;
 
@@ -37,7 +38,7 @@ public class Board {
      * or not.
      */
     public boolean isCellAvailableToThreat(Position position) {
-        if (!isPositionValid(position) ||
+        if (!PositionUtil.isPositionValid(position) ||
                 boardData[position.getX()][position.getY()] != FILLED) {
             return true;
         } else {
@@ -56,7 +57,7 @@ public class Board {
      * on the given position or not.
      */
     public boolean isCellAvailableToPutPiece(Piece piece, Position position) {
-        if (isPositionValid(position) &&
+        if (PositionUtil.isPositionValid(position) &&
                 getCellStatus(position) == EMPTY) {
             return !pieceThreatsAnotherPiece(piece, position);
         } else {
@@ -89,7 +90,7 @@ public class Board {
      * @param cellStatus status of the cell. see {@link com.trycatch.chess.constants.CellStatus}
      */
     public boolean setCellStatus(Position position, int cellStatus) {
-        if (isPositionValid(position)) {
+        if (PositionUtil.isPositionValid(position)) {
             final int x = position.getX();
             final int y = position.getY();
 
@@ -106,8 +107,6 @@ public class Board {
     }
 
     public void putPieceOnBoard(Piece piece) {
-        // TODO reuse transformed list
-
         BoardOccupyManager.getOccupiedPositionsList(piece.getID(), piece.getPosition())
                 .stream()
                 .filter(position -> !position.equals(piece.getPosition()))
@@ -116,8 +115,6 @@ public class Board {
     }
 
     public void removePieceFromBoard(Piece piece) {
-        // TODO reuse transformed list
-
         BoardOccupyManager.getOccupiedPositionsList(piece.getID(), piece.getPosition())
                 .stream()
                 .forEach(p -> unsetCellStatus(p, OCCUPIED));
@@ -125,7 +122,7 @@ public class Board {
     }
 
     private void unsetCellStatus(Position position, int cellStatus) {
-        if (!isPositionValid(position)) {
+        if (!PositionUtil.isPositionValid(position)) {
             return;
         }
         final int x = position.getX();
@@ -159,51 +156,20 @@ public class Board {
      * It will return null if there is no available position in the board.
      */
     public Position getNextAvailablePosition(Position position) {
-        Position nextPosition = getNextPosition(position);
+        Position nextPosition = PositionUtil.getNextPosition(position);
 
-        for (int i = getRawPosition(position); i < getTotalNumberOfCells(); i++) {
-            if (!isPositionValid(nextPosition)) {
+        for (int i = PositionUtil.getRawPosition(position); i < width * height; i++) {
+            if (!PositionUtil.isPositionValid(nextPosition)) {
                 return null;
             }
             if (getCellStatus(nextPosition) == EMPTY) {
                 return nextPosition;
             }
-            nextPosition = getNextPosition(nextPosition);
+            nextPosition = PositionUtil.getNextPosition(nextPosition);
         }
 
 
         return null;
-    }
-
-    private int getTotalNumberOfCells() {
-        return width * height;
-    }
-
-    private int getRawPosition(Position position) {
-        return position.getY() * width + position.getX();
-    }
-
-    private int getTransformedY(int rawPosition) {
-        return rawPosition / width;
-    }
-
-    private int getTransformedX(int rawPosition) {
-        return rawPosition % width;
-    }
-
-    /**
-     * Calculates the next cell without looking to borders,
-     * or the cell is empty or not.
-     *
-     * @param position reference position
-     * @return next position in the board. It might return invalid position as well.
-     * Might be checked with {{@link #isPositionValid(Position)}}
-     */
-    public Position getNextPosition(Position position) {
-        int rawPosition = getRawPosition(position);
-        rawPosition++;
-
-        return new Position(getTransformedX(rawPosition), getTransformedY(rawPosition));
     }
 
     /**
@@ -213,33 +179,6 @@ public class Board {
      */
     public int getNumberOfEmptyCells() {
         return numberOfEmptyCells;
-    }
-
-    /**
-     * Checks whether the given position inside the borders
-     * of the board
-     *
-     * @param position position to be checked
-     * @return true if the position is valid, false otherwise
-     */
-    private boolean isPositionValid(Position position) {
-        final int x = position.getX();
-        final int y = position.getY();
-
-        return (x < width) && (y < height) && (x >= 0) && (y >= 0);
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public boolean isPositionAfterThanLastCell(Position position) {
-        return ((position.getY() == (height - 1)) && (position.getX() >= width))
-                || (position.getY() >= height);
     }
 
     @Override

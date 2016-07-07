@@ -1,6 +1,7 @@
 package com.trycatch.chess.model;
 
 import com.trycatch.chess.model.piece.King;
+import com.trycatch.chess.util.PositionUtil;
 import org.junit.Test;
 
 import static com.trycatch.chess.constants.CellStatus.EMPTY;
@@ -51,7 +52,7 @@ public class BoardTest {
         final Position position  = new Position(3, 3);
         final Board board = new Board(4, 4);
 
-        assertEquals("Next position should be on the next row", new Position(0, 4), board.getNextPosition(position));
+        assertEquals("Next position should be on the next row", new Position(0, 4), PositionUtil.getNextPosition(position));
     }
 
     @Test

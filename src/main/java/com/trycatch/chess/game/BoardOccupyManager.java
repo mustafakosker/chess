@@ -7,32 +7,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Created by kosker on 05/07/16.
+ * This final class will be used as cache to hold
+ * all the occupied positions of given piece
+ * at specific position on the board. It will iterate
+ * through all the cells on the board for all pieces.
  */
 public final class BoardOccupyManager {
-    private static Position[] occupiedDirections = {
-            new Position(-1, -1),
-            new Position(-1, 1),
-            new Position(1, 1),
-            new Position(1, -1)
-    };
-    private static List<Position> occupiedDirectionPositionsList = Arrays.asList(occupiedDirections);
-
-    private static Piece[] pieces = {
-            new Queen(),
-            new Bishop(),
-            new King(),
-            new Knight(),
-            new Rook()
-    };
-    private static List<Piece> pieceList = Arrays.asList(pieces);
-
     private static final Map<Integer, Map<Position, List<Position>>> occupyBoardPositionsMap = new HashMap<>();
 
     private BoardOccupyManager() {
     }
 
-    public static void createOccupiedPositionsMap(int boardWidth, int boardHeight) {
+    public static void createOccupiedPositionsMap(int boardWidth, int boardHeight, List<Piece> pieceList) {
+        final List<Position> diagonalOccupiedPositionsList =
+                calculateDiagonalOccupiedPositionsList(Math.max(boardWidth, boardHeight));
+
         for (int i = 0; i < boardHeight; i++) {
             for (int j = 0; j < boardWidth; j++) {
                 final Position currentPosition = new Position(j, i);
@@ -42,8 +31,6 @@ public final class BoardOccupyManager {
                             calculateAbsoluteOccupiedPositions(piece.getRelativeOccupiedPositionsList(), currentPosition);
 
                     if (piece.occupiesDiagonal()) {
-                        List<Position> diagonalOccupiedPositionsList =
-                                calculateDiagonalOccupiedPositionsList(Math.max(boardWidth, boardHeight));
                         occupiedPositionsList.addAll(
                                 calculateAbsoluteOccupiedPositions(diagonalOccupiedPositionsList, currentPosition));
                     }
@@ -53,8 +40,8 @@ public final class BoardOccupyManager {
                         occupiedPositionsList
                                 .addAll(calculateHorizontalOccupiedPositionList(boardWidth, currentPosition.getY()));
                         occupiedPositionsList = occupiedPositionsList.stream()
-                                                    .filter(p -> !p.equals(currentPosition))
-                                                    .collect(Collectors.toList());
+                                .filter(p -> !p.equals(currentPosition))
+                                .collect(Collectors.toList());
                     }
 
                     Map<Position, List<Position>> pieceOccupiedPositionsMap = occupyBoardPositionsMap.get(piece.getID());
@@ -96,11 +83,18 @@ public final class BoardOccupyManager {
     }
 
     private static List<Position> calculateDiagonalOccupiedPositionsList(final int maxBoardDimension) {
+        final Position[] diagonalOccupiedDirections = {
+                new Position(-1, -1),
+                new Position(-1, 1),
+                new Position(1, 1),
+                new Position(1, -1)
+        };
+        final List<Position> diagonalOccupiedDirectionList = Arrays.asList(diagonalOccupiedDirections);
         final List<Position> occupiedPositionsList = new ArrayList<>();
 
         for (int i = 1; i < maxBoardDimension; i++) {
             final int multiplier = i;
-            occupiedDirectionPositionsList
+            diagonalOccupiedDirectionList
                     .forEach(p ->
                             occupiedPositionsList.add(new Position(p.getX() * multiplier, p.getY() * multiplier)));
         }

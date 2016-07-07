@@ -3,6 +3,7 @@ package com.trycatch.chess.game;
 import com.trycatch.chess.model.Board;
 import com.trycatch.chess.model.Position;
 import com.trycatch.chess.model.piece.Piece;
+import com.trycatch.chess.util.PositionUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,8 +19,6 @@ public class BoardController {
     public BoardController(Board board) throws IOException {
         this.board = board;
         this.solutionCount = 0;
-
-        BoardOccupyManager.createOccupiedPositionsMap(board.getWidth(), board.getHeight());
     }
 
     private String solutionToString(List<Piece> pieceList) {
@@ -32,7 +31,7 @@ public class BoardController {
     public void findChessCombination(Position position, int pieceIndex) throws IOException {
         if ((board.getNumberOfEmptyCells() <= 0 ||
                 position == null ||
-                board.isPositionAfterThanLastCell(position)) &&
+                PositionUtil.isPositionAfterThanLastCell(position)) &&
                 pieceIndex < pieceList.size()) {
             return;
         } else if (pieceIndex >= pieceList.size()) {

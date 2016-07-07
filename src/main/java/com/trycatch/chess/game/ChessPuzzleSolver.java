@@ -3,6 +3,7 @@ package com.trycatch.chess.game;
 import com.trycatch.chess.model.Board;
 import com.trycatch.chess.model.Position;
 import com.trycatch.chess.model.piece.*;
+import com.trycatch.chess.util.PositionUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class ChessPuzzleSolver {
         long startTime = System.currentTimeMillis();
 
         final BoardController boardController = new BoardController(new Board(boardWidth, boardHeight));
+        PositionUtil.init(boardWidth, boardHeight);
+        BoardOccupyManager.createOccupiedPositionsMap(boardWidth, boardHeight, pieceList);
 
         do {
             pieceList = Arrays.stream(pieces)
