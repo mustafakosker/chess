@@ -5,7 +5,7 @@ To execute the app, please run following command first:
 
 Now it's ready to run it. Run the command below after build:
 
-    java -jar chess-puzzle-solver-1.0-SNAPSHOT.jar
+    java -jar target/chess-puzzle-solver-1.0-SNAPSHOT.jar
 
 
 ```
