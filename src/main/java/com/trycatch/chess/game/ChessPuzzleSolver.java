@@ -58,7 +58,7 @@ public class ChessPuzzleSolver {
 
         long endTime = System.currentTimeMillis();
 
-        System.out.println(boardController.getSolutionCount());
+        System.out.println("Total solution count: " + boardController.getSolutionCount());
 
         final double totalTimeInSec = (endTime - startTime) / 1000.0d;
         System.out.println("Total time: " + totalTimeInSec + " seconds");
