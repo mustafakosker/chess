@@ -18,68 +18,27 @@ import java.util.stream.Collectors;
  * Created by kosker on 07/07/16.
  */
 public class ChessPuzzleSolver {
-    public static void main(String[] args) throws InterruptedException {
-        System.out.println("Please enter the number of pieces and piece type separated by comma.");
-        System.out.println("Type K for king, N for Knight, B for bishop and Q for Queen");
-        System.out.println("E.g: 2K,4B,3N,2Q");
-        System.out.println("Press enter for default input, that is 2K,2B,2Q,1N");
-        Scanner scanner = new Scanner(System.in);
-        String pieceInput = scanner.nextLine();
-        if (pieceInput == null || "".equals(pieceInput)) {
-            pieceInput = "2K,2Q,2B,1N";
-            System.out.println(pieceInput);
-        }
+    private final int boardWidth;
+    private final int boardHeight;
+    private final List<Piece> pieceList;
 
-        System.out.println("Please enter width of the board:");
-        final int boardWidth = scanner.nextInt();
+    public ChessPuzzleSolver(int boardWidth, int boardHeight, List<Piece> pieceList) {
+        this.boardWidth = boardWidth;
+        this.boardHeight = boardHeight;
+        this.pieceList = pieceList;
 
-        System.out.println("Please enter height of the board:");
-        final int boardHeight = scanner.nextInt();
+        initBoardUtils();
+    }
 
-        final List<Piece> pieceList = readPieces(pieceInput);
+    private void initBoardUtils() {
+        PositionUtil.init(boardWidth, boardHeight);
+        BoardOccupyManager.createOccupiedPositionsMap(boardWidth, boardHeight, pieceList);
+    }
 
+    private List<List<Piece>> generatePiecePermutationList() {
         final int[] pieces = pieceList.stream().mapToInt(Piece::getID).toArray();
         Arrays.sort(pieces);
 
-        long startTime = System.currentTimeMillis();
-
-        PositionUtil.init(boardWidth, boardHeight);
-        BoardOccupyManager.createOccupiedPositionsMap(boardWidth, boardHeight, pieceList);
-
-        final List<List<Piece>> piecePermutationList = calculatePiecePermutations(pieces);
-
-        final List<Callable<Integer>> solutionCallableList = piecePermutationList.stream()
-                .map((pList) -> ((Callable<Integer>) () -> {
-                    final BoardController controller = new BoardController((new Board(boardWidth, boardHeight)));
-                    controller.setPieceList(pList);
-                    controller.findChessCombination(new Position(0, 0), 0);
-
-                    return controller.getSolutionCount();
-                }))
-                .collect(Collectors.toList());
-        final ExecutorService executorService = Executors.newWorkStealingPool();
-        final int totalSolutionCount = executorService.invokeAll(solutionCallableList)
-                .stream()
-                .map(future -> {
-                    try {
-                        return future.get();
-                    } catch (Exception e) {
-                        throw new IllegalStateException(e);
-                    }
-                })
-                .reduce(0, (a, b) -> a + b);
-
-        executorService.shutdown();
-
-        long endTime = System.currentTimeMillis();
-
-        System.out.println("Total solution count: " + totalSolutionCount);
-
-        final double totalTimeInSec = (endTime - startTime) / 1000.0d;
-        System.out.println("Total time: " + totalTimeInSec + " seconds");
-    }
-
-    private static List<List<Piece>> calculatePiecePermutations(int[] pieces) {
         final List<List<Piece>> piecePermutationList = new ArrayList<>();
 
         do {
@@ -94,6 +53,40 @@ public class ChessPuzzleSolver {
         return piecePermutationList;
     }
 
+    private List<Callable<Integer>> generateCallableList() {
+        final List<List<Piece>> piecePermutationList = generatePiecePermutationList();
+
+        return piecePermutationList.stream()
+                .map((pList) -> ((Callable<Integer>) () -> {
+                    final BoardController controller = new BoardController((new Board(boardWidth, boardHeight)));
+                    controller.setPieceList(pList);
+                    controller.findChessCombination(new Position(0, 0), 0);
+
+                    return controller.getSolutionCount();
+                }))
+                .collect(Collectors.toList());
+    }
+
+    public int solvePuzzle() throws InterruptedException {
+        final ExecutorService executorService = Executors.newWorkStealingPool();
+        final List<Callable<Integer>> solutionCallableList = generateCallableList();
+
+        final int totalSolutionCount = executorService.invokeAll(solutionCallableList)
+                .stream()
+                .map(future -> {
+                    try {
+                        return future.get();
+                    } catch (Exception e) {
+                        throw new IllegalStateException(e);
+                    }
+                })
+                .reduce(0, (a, b) -> a + b);
+
+        executorService.shutdown();
+
+        return totalSolutionCount;
+    }
+
     /**
      * This code is taken from: https://www.nayuki.io/page/next-lexicographical-permutation-algorithm
      * Calculates all permutations of the given array.
@@ -102,7 +95,7 @@ public class ChessPuzzleSolver {
      * @param array to be processed for permutation
      * @return next permutation of given rray
      */
-    private static boolean nextPermutation(int[] array) {
+    private boolean nextPermutation(int[] array) {
         int i = array.length - 1;
         while (i > 0 && array[i - 1] >= array[i])
             i--;
@@ -140,7 +133,40 @@ public class ChessPuzzleSolver {
     }
 
 
-    public static List<Piece> readPieces(final String input) {
+    public static void main(String[] args) throws InterruptedException {
+        System.out.println("Please enter the number of pieces and piece type separated by comma.");
+        System.out.println("Type K for king, N for Knight, B for bishop and Q for Queen");
+        System.out.println("E.g: 2K,4B,3N,2Q");
+        System.out.println("Press enter for default input, that is 2K,2B,2Q,1N");
+        Scanner scanner = new Scanner(System.in);
+        String pieceInput = scanner.nextLine();
+        if (pieceInput == null || "".equals(pieceInput)) {
+            pieceInput = "2K,2Q,2B,1N";
+            System.out.println(pieceInput);
+        }
+
+        System.out.println("Please enter width of the board:");
+        final int boardWidth = scanner.nextInt();
+
+        System.out.println("Please enter height of the board:");
+        final int boardHeight = scanner.nextInt();
+
+        long startTime = System.currentTimeMillis();
+
+        final List<Piece> pieceList = readPieces(pieceInput);
+
+        final ChessPuzzleSolver chessPuzzleSolver = new ChessPuzzleSolver(boardWidth, boardHeight, pieceList);
+        final int totalSolutionCount = chessPuzzleSolver.solvePuzzle();
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Total solution count: " + totalSolutionCount);
+
+        final double totalTimeInSec = (endTime - startTime) / 1000.0d;
+        System.out.println("Total time: " + totalTimeInSec + " seconds");
+    }
+
+    private static List<Piece> readPieces(final String input) {
         final String[] splittedInput = input.split(",");
         final List<Piece> pieceList = new ArrayList<>();
 
