@@ -3,12 +3,10 @@ package com.trycatch.chess.game;
 import com.trycatch.chess.model.Board;
 import com.trycatch.chess.model.Position;
 import com.trycatch.chess.model.piece.*;
-import com.trycatch.chess.util.PositionUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,25 +16,14 @@ import java.util.stream.Collectors;
  * Created by kosker on 07/07/16.
  */
 public class ChessPuzzleSolver {
-    private final int boardWidth;
-    private final int boardHeight;
-    private final List<Piece> pieceList;
+    private final ChessPuzzle chessPuzzle;
 
-    public ChessPuzzleSolver(int boardWidth, int boardHeight, List<Piece> pieceList) {
-        this.boardWidth = boardWidth;
-        this.boardHeight = boardHeight;
-        this.pieceList = pieceList;
-
-        initBoardUtils();
-    }
-
-    private void initBoardUtils() {
-        PositionUtil.init(boardWidth, boardHeight);
-        BoardOccupyManager.createOccupiedPositionsMap(boardWidth, boardHeight, pieceList);
+    public ChessPuzzleSolver(ChessPuzzle chessPuzzle) {
+        this.chessPuzzle = chessPuzzle;
     }
 
     private List<List<Piece>> generatePiecePermutationList() {
-        final int[] pieces = pieceList.stream().mapToInt(Piece::getID).toArray();
+        final int[] pieces = chessPuzzle.getPieceList().stream().mapToInt(Piece::getID).toArray();
         Arrays.sort(pieces);
 
         final List<List<Piece>> piecePermutationList = new ArrayList<>();
@@ -44,13 +31,30 @@ public class ChessPuzzleSolver {
         do {
             List<Piece> pieceList = Arrays.stream(pieces)
                     .boxed()
-                    .map(ChessPuzzleSolver::readPiece)
+                    .map(this::readPiece)
                     .collect(Collectors.toList());
 
             piecePermutationList.add(pieceList);
         } while (nextPermutation(pieces));
 
         return piecePermutationList;
+    }
+
+    private Piece readPiece(int pieceId) {
+        switch (pieceId) {
+            case King.ID:
+                return new King();
+            case Knight.ID:
+                return new Knight();
+            case Queen.ID:
+                return new Queen();
+            case Bishop.ID:
+                return new Bishop();
+            case Rook.ID:
+                return new Rook();
+            default:
+                return null;
+        }
     }
 
     private List<Callable<Integer>> generateCallableList() {
@@ -60,7 +64,7 @@ public class ChessPuzzleSolver {
                 .map((pList) -> ((Callable<Integer>) () -> {
                     System.out.println("Calculation started at thread: " + Thread.currentThread().getName());
 
-                    final BoardController controller = new BoardController((new Board(boardWidth, boardHeight)));
+                    final BoardController controller = new BoardController((new Board(chessPuzzle.getBoardWidth(), chessPuzzle.getBoardHeight())));
                     controller.setPieceList(pList);
                     controller.findChessCombination(new Position(0, 0), 0);
 
@@ -134,89 +138,5 @@ public class ChessPuzzleSolver {
 
         // Successfully computed the next permutation
         return true;
-    }
-
-
-    public static void main(String[] args) throws InterruptedException {
-        final String DEFAULT_PIECE_INPUT = "2K,2Q,2B,1N";
-
-        System.out.println("Please enter the number of pieces and piece type separated by comma.");
-        System.out.println("Type K for king, N for Knight, B for bishop and Q for Queen");
-        System.out.println("E.g: 2K,4B,3N,2Q");
-        System.out.println("Press enter for default input(2K,2B,2Q,1N)");
-        Scanner scanner = new Scanner(System.in);
-        String pieceInput = scanner.nextLine();
-        if (pieceInput == null || "".equals(pieceInput)) {
-            pieceInput = DEFAULT_PIECE_INPUT;
-            System.out.println(pieceInput);
-        }
-
-        System.out.println("Please enter width of the board:");
-        final int boardWidth = scanner.nextInt();
-
-        System.out.println("Please enter height of the board:");
-
-        final int boardHeight = scanner.nextInt();
-
-        System.out.println("Piece list: " + pieceInput);
-        System.out.println("Board Width: " + boardWidth);
-        System.out.println("Board Height: " + boardHeight);
-
-        System.out.println("Calculation started...");
-
-        long startTime = System.currentTimeMillis();
-
-        final List<Piece> pieceList = readPieces(pieceInput);
-
-        final ChessPuzzleSolver chessPuzzleSolver = new ChessPuzzleSolver(boardWidth, boardHeight, pieceList);
-        final int totalSolutionCount = chessPuzzleSolver.solvePuzzle();
-
-        long endTime = System.currentTimeMillis();
-
-        System.out.println("Calculation finished!");
-        System.out.println("Total solution count: " + totalSolutionCount);
-
-        final double totalTimeInSec = (endTime - startTime) / 1000.0d;
-        System.out.println("Total time: " + totalTimeInSec + " seconds");
-    }
-
-    private static List<Piece> readPieces(final String input) {
-        final String[] splittedInput = input.split(",");
-        final List<Piece> pieceList = new ArrayList<>();
-
-        Arrays.stream(splittedInput).forEach(s -> {
-            s = s.trim();
-
-            final int numberOfPiece = s.charAt(0) - '0';
-            final char pieceKeyChar = s.charAt(1);
-
-            for (int i = 0; i < numberOfPiece; i++) {
-                pieceList.add(readPiece(pieceKeyChar));
-            }
-        });
-
-        return pieceList;
-    }
-
-    private static Piece readPiece(final int pieceKeyChar) {
-        switch (pieceKeyChar) {
-            case 'K':
-            case King.ID:
-                return new King();
-            case 'N':
-            case Knight.ID:
-                return new Knight();
-            case 'Q':
-            case Queen.ID:
-                return new Queen();
-            case 'B':
-            case Bishop.ID:
-                return new Bishop();
-            case 'R':
-            case Rook.ID:
-                return new Rook();
-            default:
-                return null;
-        }
     }
 }

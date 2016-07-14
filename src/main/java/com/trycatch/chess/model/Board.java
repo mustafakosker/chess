@@ -214,6 +214,14 @@ public class Board {
         return numberOfEmptyCells;
     }
 
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
     @Override
     public String toString() {
         String separator = ",";
