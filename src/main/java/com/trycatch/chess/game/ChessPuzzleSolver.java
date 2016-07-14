@@ -58,9 +58,13 @@ public class ChessPuzzleSolver {
 
         return piecePermutationList.stream()
                 .map((pList) -> ((Callable<Integer>) () -> {
+                    System.out.println("Calculation started at thread: " + Thread.currentThread().getName());
+
                     final BoardController controller = new BoardController((new Board(boardWidth, boardHeight)));
                     controller.setPieceList(pList);
                     controller.findChessCombination(new Position(0, 0), 0);
+
+                    System.out.println("Calculation ended at thread: " + Thread.currentThread().getName());
 
                     return controller.getSolutionCount();
                 }))
@@ -134,14 +138,18 @@ public class ChessPuzzleSolver {
 
 
     public static void main(String[] args) throws InterruptedException {
+        final int DEFAULT_BOARD_WIDTH = 7;
+        final int DEFAULT_BOARD_HEIGHT = 7;
+        final String DEFAULT_PIECE_INPUT = "2K,2Q,2B,1N";
+
         System.out.println("Please enter the number of pieces and piece type separated by comma.");
         System.out.println("Type K for king, N for Knight, B for bishop and Q for Queen");
         System.out.println("E.g: 2K,4B,3N,2Q");
-        System.out.println("Press enter for default input, that is 2K,2B,2Q,1N");
+        System.out.println("Press enter for default input(2K,2B,2Q,1N)");
         Scanner scanner = new Scanner(System.in);
         String pieceInput = scanner.nextLine();
         if (pieceInput == null || "".equals(pieceInput)) {
-            pieceInput = "2K,2Q,2B,1N";
+            pieceInput = DEFAULT_PIECE_INPUT;
             System.out.println(pieceInput);
         }
 
@@ -149,7 +157,14 @@ public class ChessPuzzleSolver {
         final int boardWidth = scanner.nextInt();
 
         System.out.println("Please enter height of the board:");
+
         final int boardHeight = scanner.nextInt();
+
+        System.out.println("Piece list: " + pieceInput);
+        System.out.println("Board Width: " + boardWidth);
+        System.out.println("Board Height: " + boardHeight);
+
+        System.out.println("Calculation started...");
 
         long startTime = System.currentTimeMillis();
 
@@ -160,6 +175,7 @@ public class ChessPuzzleSolver {
 
         long endTime = System.currentTimeMillis();
 
+        System.out.println("Calculation finished!");
         System.out.println("Total solution count: " + totalSolutionCount);
 
         final double totalTimeInSec = (endTime - startTime) / 1000.0d;
@@ -171,6 +187,8 @@ public class ChessPuzzleSolver {
         final List<Piece> pieceList = new ArrayList<>();
 
         Arrays.stream(splittedInput).forEach(s -> {
+            s = s.trim();
+
             final int numberOfPiece = s.charAt(0) - '0';
             final char pieceKeyChar = s.charAt(1);
 
