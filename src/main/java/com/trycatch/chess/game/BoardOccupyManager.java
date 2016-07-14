@@ -1,7 +1,7 @@
 package com.trycatch.chess.game;
 
 import com.trycatch.chess.model.Position;
-import com.trycatch.chess.model.piece.*;
+import com.trycatch.chess.model.piece.Piece;
 
 import java.util.*;
 import java.util.stream.Collectors;

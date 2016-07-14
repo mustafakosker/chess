@@ -138,8 +138,6 @@ public class ChessPuzzleSolver {
 
 
     public static void main(String[] args) throws InterruptedException {
-        final int DEFAULT_BOARD_WIDTH = 7;
-        final int DEFAULT_BOARD_HEIGHT = 7;
         final String DEFAULT_PIECE_INPUT = "2K,2Q,2B,1N";
 
         System.out.println("Please enter the number of pieces and piece type separated by comma.");

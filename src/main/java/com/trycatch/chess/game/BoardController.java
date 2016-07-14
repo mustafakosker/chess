@@ -5,7 +5,6 @@ import com.trycatch.chess.model.Position;
 import com.trycatch.chess.model.piece.Piece;
 import com.trycatch.chess.util.PositionUtil;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -16,7 +15,7 @@ public class BoardController {
     private Board board;
     private int solutionCount;
 
-    public BoardController(Board board) throws IOException {
+    public BoardController(Board board) {
         this.board = board;
         this.solutionCount = 0;
     }
@@ -40,9 +39,8 @@ public class BoardController {
      *
      * @param position
      * @param pieceIndex
-     * @throws IOException
      */
-    public void findChessCombination(Position position, int pieceIndex) throws IOException {
+    public void findChessCombination(Position position, int pieceIndex) {
         // Exit condition for the method. It means that if there is no empty cells on the board
         // or given position is null(meaning there is no available next position on the board)
         // and we have not placed all the pieces to the board, it means that it cannot find the
