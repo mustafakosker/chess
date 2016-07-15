@@ -17,10 +17,13 @@ import java.util.stream.Collectors;
  */
 public class ChessPuzzleSolver {
     private final ChessPuzzle chessPuzzle;
+    private final boolean writeSolutionOnConsole;
+
     private final List<Callable<Integer>> piecePermutationCallableList;
 
-    public ChessPuzzleSolver(ChessPuzzle chessPuzzle) {
+    public ChessPuzzleSolver(ChessPuzzle chessPuzzle, boolean writeSolutionOnConsole) {
         this.chessPuzzle = chessPuzzle;
+        this.writeSolutionOnConsole = writeSolutionOnConsole;
 
         final List<List<Piece>> piecePermutationList = calculatePiecePermutationList(chessPuzzle.getPieceList());
         this.piecePermutationCallableList = generateCallableList(piecePermutationList);
@@ -38,8 +41,10 @@ public class ChessPuzzleSolver {
                     System.out.println("Calculation started at thread: " + Thread.currentThread().getName());
 
                     final BoardController controller =
-                            new BoardController((new Board(chessPuzzle.getBoardWidth(), chessPuzzle.getBoardHeight())));
-                    controller.setPieceList(pList);
+                            new BoardController(
+                                    (new Board(chessPuzzle.getBoardWidth(), chessPuzzle.getBoardHeight())),
+                                    pList,
+                                    writeSolutionOnConsole);
                     controller.findChessCombination(new Position(0, 0), 0);
 
                     System.out.println("Calculation ended at thread: " + Thread.currentThread().getName());

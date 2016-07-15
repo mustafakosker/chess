@@ -28,7 +28,7 @@ Now you will see solution of the puzzle. It will return following result for
 default configuration:
 ```
 Total solution count: 3063828
-Total time: 100.629 seconds
+Total time: 23.643 seconds
 ```
 
 Main class is `com.trycatch.chess.game.ChessPuzzleSolver`. This class will

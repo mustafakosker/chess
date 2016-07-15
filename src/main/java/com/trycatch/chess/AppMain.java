@@ -24,10 +24,14 @@ public class AppMain {
         }
 
         System.out.println("Please enter width of the board:");
-        final int boardWidth = scanner.nextInt();
+        final int boardWidth = Integer.valueOf(scanner.nextLine());
 
         System.out.println("Please enter height of the board:");
-        final int boardHeight = scanner.nextInt();
+        final int boardHeight = Integer.valueOf(scanner.nextLine());
+
+        System.out.println("Do you want to see the solutions on the console(yes/no)?");
+        final String solutionOnConsole = scanner.nextLine();
+        final boolean writeSolutionOnConsole = "yes".equalsIgnoreCase(solutionOnConsole) || "y".equalsIgnoreCase(solutionOnConsole);
 
         System.out.println("Calculation started...");
 
@@ -39,16 +43,18 @@ public class AppMain {
                 .withBoardHeight(boardHeight)
                 .withPieceList(pieceInput)
                 .build();
-        final ChessPuzzleSolver chessPuzzleSolver = new ChessPuzzleSolver(chessPuzzle);
+        final ChessPuzzleSolver chessPuzzleSolver = new ChessPuzzleSolver(chessPuzzle, writeSolutionOnConsole);
 
         final int totalSolutionCount = chessPuzzleSolver.solvePuzzle();
 
         long endTime = System.currentTimeMillis();
 
         System.out.println("Calculation finished!");
+        System.out.println();
         System.out.println("Piece list: " + pieceInput);
         System.out.println("Board Width: " + boardWidth);
         System.out.println("Board Height: " + boardHeight);
+        System.out.println();
         System.out.println("Total solution count: " + totalSolutionCount);
 
         final double totalTimeInSec = (endTime - startTime) / 1000.0d;

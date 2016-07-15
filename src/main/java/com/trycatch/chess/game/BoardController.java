@@ -11,17 +11,20 @@ import java.util.List;
  * Created by kosker on 03/07/16.
  */
 public class BoardController {
-    private List<Piece> pieceList;
-    private Board board;
+    private final List<Piece> pieceList;
+    private final Board board;
+    private final boolean writeOutputToConsole;
     private int solutionCount;
 
-    public BoardController(Board board) {
+    public BoardController(Board board, List<Piece> pieceList, boolean writeOutputToConsole) {
         this.board = board;
+        this.pieceList = pieceList;
+        this.writeOutputToConsole = writeOutputToConsole;
         this.solutionCount = 0;
     }
 
     private String solutionToString(List<Piece> pieceList) {
-        final StringBuilder solution = new StringBuilder("Solution " + solutionCount).append("\n");
+        final StringBuilder solution = new StringBuilder("Solution").append("\n");
         pieceList.stream().forEach(piece -> solution.append(piece.toString()).append("\n"));
 
         return solution.toString();
@@ -51,8 +54,9 @@ public class BoardController {
                 pieceIndex < pieceList.size()) {
             return;
         } else if (pieceIndex >= pieceList.size()) { // This means that we have found a solution
-            // To list all the positions of the found solution, uncomment next line
-            // System.out.println(solutionToString(pieceList));
+            if (writeOutputToConsole) {
+                System.out.println(solutionToString(pieceList));
+            }
             solutionCount++;
         } else {
             // Next available position of the board relative to given position
@@ -74,10 +78,6 @@ public class BoardController {
             // Continue placing the current piece to next position
             findChessCombination(newPosition, pieceIndex);
         }
-    }
-
-    public void setPieceList(List<Piece> pieceList) {
-        this.pieceList = pieceList;
     }
 
     public int getSolutionCount() {
