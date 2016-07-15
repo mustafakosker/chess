@@ -17,13 +17,24 @@ import java.util.stream.Collectors;
  */
 public class ChessPuzzleSolver {
     private final ChessPuzzle chessPuzzle;
+    private final List<Callable<Integer>> piecePermutationCallableList;
 
     public ChessPuzzleSolver(ChessPuzzle chessPuzzle) {
         this.chessPuzzle = chessPuzzle;
+
+        final List<List<Piece>> piecePermutationList = calculatePiecePermutationList(chessPuzzle.getPieceList());
+        this.piecePermutationCallableList = generateCallableList(piecePermutationList);
     }
 
-    private List<List<Piece>> generatePiecePermutationList() {
-        final int[] pieces = chessPuzzle.getPieceList().stream().mapToInt(Piece::getID).toArray();
+    /**
+     * Calculates all permutations of given piece list and returns
+     * a list of lists containing the permutations.
+     *
+     * @param chessPieceList List to calculate permutations
+     * @return list of lists containing all permutations of the input list
+     */
+    private List<List<Piece>> calculatePiecePermutationList(List<Piece> chessPieceList) {
+        final int[] pieces = chessPieceList.stream().mapToInt(Piece::getID).toArray();
         Arrays.sort(pieces);
 
         final List<List<Piece>> piecePermutationList = new ArrayList<>();
@@ -31,7 +42,7 @@ public class ChessPuzzleSolver {
         do {
             List<Piece> pieceList = Arrays.stream(pieces)
                     .boxed()
-                    .map(this::readPiece)
+                    .map(this::createPieceFromId)
                     .collect(Collectors.toList());
 
             piecePermutationList.add(pieceList);
@@ -40,7 +51,7 @@ public class ChessPuzzleSolver {
         return piecePermutationList;
     }
 
-    private Piece readPiece(int pieceId) {
+    private Piece createPieceFromId(int pieceId) {
         switch (pieceId) {
             case King.ID:
                 return new King();
@@ -57,9 +68,7 @@ public class ChessPuzzleSolver {
         }
     }
 
-    private List<Callable<Integer>> generateCallableList() {
-        final List<List<Piece>> piecePermutationList = generatePiecePermutationList();
-
+    private List<Callable<Integer>> generateCallableList(List<List<Piece>> piecePermutationList) {
         return piecePermutationList.stream()
                 .map((pList) -> ((Callable<Integer>) () -> {
                     System.out.println("Calculation started at thread: " + Thread.currentThread().getName());
@@ -77,9 +86,8 @@ public class ChessPuzzleSolver {
 
     public int solvePuzzle() throws InterruptedException {
         final ExecutorService executorService = Executors.newWorkStealingPool();
-        final List<Callable<Integer>> solutionCallableList = generateCallableList();
 
-        final int totalSolutionCount = executorService.invokeAll(solutionCallableList)
+        final int totalSolutionCount = executorService.invokeAll(piecePermutationCallableList)
                 .stream()
                 .map(future -> {
                     try {

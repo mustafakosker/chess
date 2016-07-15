@@ -23,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.trycatch.chess.game.ChessPuzzleSolverMain</mainClass>
+                            <mainClass>com.trycatch.chess.AppMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

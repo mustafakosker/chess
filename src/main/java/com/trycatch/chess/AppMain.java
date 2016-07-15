@@ -1,11 +1,14 @@
-package com.trycatch.chess.game;
+package com.trycatch.chess;
+
+import com.trycatch.chess.game.ChessPuzzle;
+import com.trycatch.chess.game.ChessPuzzleSolver;
 
 import java.util.Scanner;
 
 /**
- * Created by kosker on 15/07/16.
+ * Created by koskerm on 15/07/2016.
  */
-public class ChessPuzzleSolverMain {
+public class AppMain {
     public static void main(String[] args) throws InterruptedException {
         final String DEFAULT_PIECE_INPUT = "2K,2Q,2B,1N";
 
