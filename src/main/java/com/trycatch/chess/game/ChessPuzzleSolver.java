@@ -27,6 +27,29 @@ public class ChessPuzzleSolver {
     }
 
     /**
+     * Creates callable functions for each permutation calculated at {@link #calculatePiecePermutationList(List)}
+
+     * @param piecePermutationList permutation list to be used for creating callable functions
+     * @return lists of Callable functions
+     */
+    private List<Callable<Integer>> generateCallableList(List<List<Piece>> piecePermutationList) {
+        return piecePermutationList.stream()
+                .map((pList) -> ((Callable<Integer>) () -> {
+                    System.out.println("Calculation started at thread: " + Thread.currentThread().getName());
+
+                    final BoardController controller =
+                            new BoardController((new Board(chessPuzzle.getBoardWidth(), chessPuzzle.getBoardHeight())));
+                    controller.setPieceList(pList);
+                    controller.findChessCombination(new Position(0, 0), 0);
+
+                    System.out.println("Calculation ended at thread: " + Thread.currentThread().getName());
+
+                    return controller.getSolutionCount();
+                }))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Calculates all permutations of given piece list and returns
      * a list of lists containing the permutations.
      *
@@ -66,41 +89,6 @@ public class ChessPuzzleSolver {
             default:
                 return null;
         }
-    }
-
-    private List<Callable<Integer>> generateCallableList(List<List<Piece>> piecePermutationList) {
-        return piecePermutationList.stream()
-                .map((pList) -> ((Callable<Integer>) () -> {
-                    System.out.println("Calculation started at thread: " + Thread.currentThread().getName());
-
-                    final BoardController controller = new BoardController((new Board(chessPuzzle.getBoardWidth(), chessPuzzle.getBoardHeight())));
-                    controller.setPieceList(pList);
-                    controller.findChessCombination(new Position(0, 0), 0);
-
-                    System.out.println("Calculation ended at thread: " + Thread.currentThread().getName());
-
-                    return controller.getSolutionCount();
-                }))
-                .collect(Collectors.toList());
-    }
-
-    public int solvePuzzle() throws InterruptedException {
-        final ExecutorService executorService = Executors.newWorkStealingPool();
-
-        final int totalSolutionCount = executorService.invokeAll(piecePermutationCallableList)
-                .stream()
-                .map(future -> {
-                    try {
-                        return future.get();
-                    } catch (Exception e) {
-                        throw new IllegalStateException(e);
-                    }
-                })
-                .reduce(0, (a, b) -> a + b);
-
-        executorService.shutdown();
-
-        return totalSolutionCount;
     }
 
     /**
@@ -146,5 +134,31 @@ public class ChessPuzzleSolver {
 
         // Successfully computed the next permutation
         return true;
+    }
+
+    /**
+     * Solve the puzzle by parallelizing created callable functions. WorkStealingPool will create
+     * thread pool using all available processors.
+     *
+     * @return returns the total number of solutions.
+     * @throws InterruptedException
+     */
+    public int solvePuzzle() throws InterruptedException {
+        final ExecutorService executorService = Executors.newWorkStealingPool();
+
+        final int totalSolutionCount = executorService.invokeAll(piecePermutationCallableList)
+                .stream()
+                .map(future -> {
+                    try {
+                        return future.get();
+                    } catch (Exception e) {
+                        throw new IllegalStateException(e);
+                    }
+                })
+                .reduce(0, (a, b) -> a + b);
+
+        executorService.shutdown();
+
+        return totalSolutionCount;
     }
 }
